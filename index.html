@@ -29,15 +29,21 @@
             { color: 'bg-orange-500', border: 'border-orange-500', label: 'Orange' }
         ];
 
+        const INITIAL_PLAYERS = [
+            { id: 'p1', name: 'Amit', color: 'bg-rose-600', border: 'border-rose-500', balance: 25000 },
+            { id: 'p2', name: 'Riya', color: 'bg-sky-600', border: 'border-sky-500', balance: 25000 },
+            { id: 'p3', name: 'Kaelen', color: 'bg-emerald-600', border: 'border-emerald-500', balance: 25000 },
+            { id: 'p4', name: 'Sarah', color: 'bg-amber-500', border: 'border-amber-500', balance: 25000 }
+        ];
+
         function App() {
-            // Screen tracking: 'setup' or 'playing'
             const [screen, setScreen] = useState(() => {
                 return localStorage.getItem('biz_screen') || 'setup';
             });
             
             const [numPlayers, setNumPlayers] = useState(4);
             const [playerNames, setPlayerNames] = useState(['', '', '', '', '', '']);
-            const [startingCash, setStartingCash] = useState(15000);
+            const [startingCash, setStartingCash] = useState(25000);
 
             const [players, setPlayers] = useState(() => {
                 const saved = localStorage.getItem('biz_players');
@@ -134,7 +140,6 @@
                 }
             };
 
-            // SCREEN 1: GAME ONBOARDING SETUP
             if (screen === 'setup') {
                 return (
                     <div class="max-w-xl mx-auto p-6 md:pt-16 min-h-screen flex flex-col justify-center">
@@ -145,7 +150,6 @@
                             </div>
 
                             <form onSubmit={handleStartGame} class="space-y-5">
-                                {/* 1. Number of Players Selector */}
                                 <div class="space-y-2">
                                     <label class="text-xs font-mono uppercase tracking-wider text-slate-400">1. Number of Players</label>
                                     <div class="grid grid-cols-5 gap-2">
@@ -157,10 +161,9 @@
                                     </div>
                                 </div>
 
-                                {/* 2. Player Names Grid */}
                                 <div class="space-y-3">
                                     <label class="text-xs font-mono uppercase tracking-wider text-slate-400">2. Enter Names & Assign Tokens</label>
-                                    <div class="space-y-2 max-h-60 overflow-y-auto pr-1">
+                                    <div class="space-y-2 max-h-65 overflow-y-auto pr-1">
                                         {Array.from({ length: numPlayers }).map((_, idx) => (
                                             <div key={idx} class="flex items-center gap-3 bg-slate-950 p-2 rounded-lg border border-slate-800">
                                                 <span class={`w-4 h-4 rounded-full shrink-0 ${COLOR_PALETTE[idx].color}`} title={COLOR_PALETTE[idx].label}></span>
@@ -170,7 +173,6 @@
                                     </div>
                                 </div>
 
-                                {/* 3. Starting Cash */}
                                 <div class="space-y-2">
                                     <label class="text-xs font-mono uppercase tracking-wider text-slate-400 block">3. Starting Balance</label>
                                     <div class="flex items-center justify-between bg-slate-950 px-4 py-2 rounded-lg border border-slate-800">
@@ -180,7 +182,6 @@
                                     </div>
                                 </div>
 
-                                {/* Submit button */}
                                 <button type="submit" class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 font-bold tracking-wider text-white rounded-xl shadow-lg shadow-indigo-900/30 transition text-sm">
                                     START BANKING CONSOLE
                                 </button>
@@ -190,16 +191,13 @@
                 );
             }
 
-            // SCREEN 2: MAIN DASHBOARD CONSOLE
             return (
                 <div class="max-w-6xl mx-auto p-4 md:p-6 lg:p-8 space-y-6">
-                    {/* Header */}
                     <div class="flex justify-between items-center border-b border-slate-800 pb-4">
                         <h1 class="text-2xl font-bold tracking-wider text-slate-200">INTERNATIONAL BUSINESS <span class="text-xs bg-slate-800 text-slate-400 px-2 py-1 rounded ml-2 font-mono">BANKER</span></h1>
                         <button onClick={handleReset} class="text-xs text-slate-500 hover:text-rose-400 font-mono transition">RESET ENTIRE GAME</button>
                     </div>
 
-                    {/* Dynamic Wallets Layout */}
                     <div class={`grid gap-4 ${players.length <= 4 ? 'grid-cols-2 md:grid-cols-4' : 'grid-cols-2 md:grid-cols-6'}`}>
                         {players.map(p => (
                             <div key={p.id} class={`p-4 rounded-xl border ${p.border} bg-slate-900/50 backdrop-blur flex flex-col justify-between h-24`}>
@@ -212,7 +210,6 @@
                         ))}
                     </div>
 
-                    {/* Controls Module */}
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 bg-slate-900/40 p-6 rounded-2xl border border-slate-800">
                         
                         {/* 1. SENDER */}
@@ -265,14 +262,14 @@
                                 <button onClick={() => setAmount(0)} class="w-full py-1 bg-slate-900 hover:bg-slate-800 text-xs text-slate-400 rounded border border-slate-800 font-mono">Clear Amount</button>
                             </div>
 
-                            {/* REASON & EXECUTE */}
+                            {/* CUSTOM BUSINESS REASON TAGS */}
                             <div class="space-y-3 pt-3 border-t border-slate-800/60">
-                                <div class="grid grid-cols-3 gap-1 text-center text-[11px]">
-                                    {['General', 'Rent', 'Pass Start'].map(r => (
-                                        <button key={r} onClick={() => { setReason(r); if(r==='Pass Start' && amount===0) setAmount(2000); }} class={`py-1 rounded font-mono ${reason === r ? 'bg-slate-700 text-white' : 'bg-slate-800/40 text-slate-400'}`}>{r}</button>
+                                <div class="grid grid-cols-3 gap-1 text-center text-[10px]">
+                                    {['Buy', 'Rent', 'Fine', 'Reward', 'Mortgage', 'General'].map(r => (
+                                        <button key={r} onClick={() => setReason(r)} class={`py-1.5 rounded font-mono font-semibold uppercase tracking-wider ${reason === r ? 'bg-indigo-600 text-white' : 'bg-slate-800/50 text-slate-400 hover:bg-slate-800'}`}>{r}</button>
                                     ))}
                                 </div>
-                                <button onClick={handleExecute} class="w-full p-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow-lg shadow-emerald-900/20 active:scale-[0.99] transition duration-100 text-sm">
+                                <button onClick={handleExecute} class="w-full p-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow-lg shadow-emerald-900/20 active:scale-[0.99] transition duration-100 text-sm tracking-wider">
                                     EXECUTE TRANSACTION
                                 </button>
                             </div>
@@ -302,7 +299,7 @@
                                             <span class="font-medium text-slate-300">{log.receiver.name}</span>
                                             <span class="text-slate-600">•</span>
                                             <span class="font-mono font-bold text-emerald-400">${log.amount.toLocaleString()}</span>
-                                            <span class="text-[10px] bg-slate-800 px-1.5 py-0.5 text-slate-400 rounded font-mono">{log.reason}</span>
+                                            <span class="text-[9px] bg-slate-800 px-1.5 py-0.5 text-slate-400 rounded font-mono uppercase tracking-wider">{log.reason}</span>
                                         </div>
                                     </div>
                                 ))
